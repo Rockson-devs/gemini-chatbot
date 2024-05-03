@@ -7,38 +7,28 @@ require('dotenv').config()
 app.use(express.json())
 app.use(cors())
 
+const {GoogleGenerativeAI} = require("@google/generative-ai");
+const genAI = new GoogleGenerativeAI(process.env.LANGUAGE_MODEL_API_KEY)
 
-const LANGUAGE_MODEL_API_KEY = process.env.LANGUAGE_MODEL_API_KEY
-const LANGUAGE_MODEL_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${LANGUAGE_MODEL_API_KEY}`
 
 
 app.get('/prompt/:text', async(req, res) => {
+    const model = genAI.getGenerativeModel({model: "gemini-pro"})
     const text = req.params.text
-    const user = req.params.user
-
-    const payload = {
-        // prompt: {"messages": [{ "content": text}]},
-        // temperature: 0.1,
-        // candidate_count: 1,
-        contents: [
-            
-              { "role": user,
-                "parts": [{ "text": text }]},
-            
-        ]
-    }
-
-    const response = await fetch(LANGUAGE_MODEL_URL, {
-        headers: {
-            "Content-Type": "application/json"
+    const chat = model.startChat({
+        history:[{
+            role: "user",
+            parts: [{ text: "Hello" }],
         },
-        body: JSON.stringify(payload),
-        method: "POST",
+        {   role: "model",
+            parts: [{ text: "Hi" }],
+        }
+    ]
     })
-    const data = await response.json()
+    const result = await chat.sendMessage(text)
+    const response = result.response;
+    const data = response.text()
     console.log(data);
-    // console.log(data.candidates[0].content.parts[0].text);
-
     res.send(data)
 })
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`))

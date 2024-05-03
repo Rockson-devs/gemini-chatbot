@@ -9,14 +9,13 @@ const App = () => {
   console.log('messages', messages);
   const getResponse = async() => {
     const response = await fetch(`http://localhost:8000/prompt/${text}`)
-      const data = await response.json()
+       const data = (await response.text()).toString()
+       
       console.log('data', data);
       setMessages([...messages,
       {
-        
-          // author:data.messages[0].content,
           prompt: text,
-          bot: data.candidates[0].content.parts[0].text
+          bot:data
         
       }])
   }
