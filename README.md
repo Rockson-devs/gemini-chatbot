@@ -8,7 +8,7 @@ To run Gem Bot on your local machine, follow these steps:
 
 1. Clone this repository to your local machine using Git:
 
-https://github.com/Rockson-devs/gemini-chatbot.git
+https://github.com/Rockson-devs/geminnpi-chatbot.git
 
 2. Navigate to the project directory: cd gemini-chatbot
 
